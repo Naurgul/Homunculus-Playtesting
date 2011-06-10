@@ -18,7 +18,7 @@ public class TestChess
 	public static void main(String[] args)
 	{
 		//Logger log = new Logger("C:\\Users\\Νικόλας\\Desktop\\timelogs\\4.txt");
-		
+				
 		ChessStyle strat1 = new ChessStyle();
 		ChessStyle strat2 = new ChessStyle();
 		

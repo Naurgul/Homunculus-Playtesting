@@ -6,20 +6,29 @@ import gameTheory.ZeroSumNormalFormGame;
 
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.Random;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import ec.util.MersenneTwisterFast;
 
 public class HomunculusPlayer 
 {
 	private int maxdepth;
 	private PlayerType player;
+	private MersenneTwisterFast luck;
 	
 	public HomunculusPlayer(int maxdepth, PlayerType player) 
 	{
 		this.maxdepth = maxdepth;
 		this.player = player;
+		luck = new MersenneTwisterFast();	
+	}
+	
+	public HomunculusPlayer(int maxdepth, PlayerType player, MersenneTwisterFast randomizer) 
+	{
+		this.maxdepth = maxdepth;
+		this.player = player;
+		luck = randomizer;	
 	}
 	
 	//Returns the best action to play given a game state.
@@ -138,7 +147,6 @@ public class HomunculusPlayer
 		}
 		
 		GameAction bestaction = null;
-		Random luck = new Random();		
 		double threshold = luck.nextDouble();
 		
 		if (player.equals(PlayerType.BOTH_PLAYERS))

@@ -58,11 +58,22 @@ public class ChessStyle extends DoubleVectorIndividual implements PlayStyle
 	TRAVEL_GAUSSIAN_C [5,15)
 */
 	
+	public void init(double params[])
+	{
+		genome = new double[params.length];
+		for(int i = 0; i < params.length; i++)
+		{
+			genome[i] = params[i];
+		}	
+	}
+
+	
 	@Override
 	public void reset(EvolutionState state, int thread)
 	{
+		
 		super.reset(state, thread);
-		MersenneTwisterFast randomiser = new MersenneTwisterFast();		
+		MersenneTwisterFast randomiser = state.random[thread];		
 		 
 		//make sure the piece values are sensible (e.g. pawns never more valuable than queen etc)
 		while (genome[Consts.PAWN_VALUE] >= genome[Consts.BISHOP_VALUE] || genome[Consts.PAWN_VALUE] >= genome[Consts.KNIGHT_VALUE] || genome[Consts.BISHOP_VALUE] >= genome[Consts.ROOK_VALUE] || genome[Consts.KNIGHT_VALUE] >= genome[Consts.ROOK_VALUE] || genome[Consts.ROOK_VALUE] >= genome[Consts.QUEEN_VALUE])	
@@ -262,7 +273,7 @@ public class ChessStyle extends DoubleVectorIndividual implements PlayStyle
 		//the more distance a piece covers on the board, the better
 		double travel; //	[0,1]
 		int travel_distance = Math.abs(targetSquare.getFile() - fromSquare.getFile()) + Math.abs(targetSquare.getRank() - fromSquare.getRank()); // [1,14]
-		travel = Math.exp(-Math.pow(travel_distance-14,2)/Math.pow(genome[Consts.PROMOTION_DISTANCE_GAUSSIAN_C],2));
+		travel = Math.exp(-Math.pow(travel_distance-14,2)/Math.pow(genome[Consts.TRAVEL_GAUSSIAN_C],2));
 		
 		return (genome[Consts.CENTRE_WEIGHT] * centre) + (genome[Consts.THREATEN_WEIGHT] * threaten) + (genome[Consts.DEFEND_WEIGHT] * defend) + (genome[Consts.PROMOTION_WEIGHT] * promotion) + (genome[Consts.TRAVEL_WEIGHT] * travel);
 	}
