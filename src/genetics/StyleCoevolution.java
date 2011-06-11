@@ -98,30 +98,7 @@ public class StyleCoevolution extends Problem implements GroupedProblemForm
 			int turn;
 			for (turn = 1; turn <= Consts.MAX_TURNS; turn++)
 			{
-				if (game.isOver())
-				{
 
-					if (game.GetValue(null) > 0)
-					{
-						if (updateFitness[0])
-						{
-							fit1.setFitness(state, fit1.fitness() + 1, false);
-							fit1.trials++;
-						}
-					}
-					else
-					{
-						if (updateFitness[1])
-						{
-							fit2.setFitness(state, fit2.fitness() + 1, false);
-							fit2.trials++;
-						}
-					}
-					
-					break;
-				}						
-				
-				
 				if (game.whoPlaysNext().equals(PlayerType.PLAYER_1))
 				{
 					move1 = bot1.Think(game);
@@ -147,12 +124,40 @@ public class StyleCoevolution extends Problem implements GroupedProblemForm
 					//TODO: Should never happen, throw exception.
 				}
 				
+				if (game.isOver())
+				{
+
+					if (game.GetValue(null) > 0)
+					{
+						if (updateFitness[0])
+						{
+							fit1.setFitness(state, fit1.fitness() + 1, false);
+						}
+					}
+					else
+					{
+						if (updateFitness[1])
+						{
+							fit2.setFitness(state, fit2.fitness() + 1, false);
+						}
+					}
+					
+					break;
+				}		
+				
 					
 			}
 			
+			if (updateFitness[0])
+			{
+				fit1.trials++;
+			}
+			if (updateFitness[1])
+			{
+				fit2.trials++;
+			}			
 		
-		}
-		
+		}	
 		
 	}
 

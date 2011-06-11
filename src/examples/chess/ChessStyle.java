@@ -19,7 +19,7 @@ public class ChessStyle extends DoubleVectorIndividual implements PlayStyle
   	OPTIMIZABLE PARAMETERS: 
  
 	mobility versus material
-	MOBILITY_WEIGHT	[0,1] (implied: MATERIAL_WEIGHT = 1 - MOBILITY_WEIGHT)		 
+	MOBILITY_WEIGHT	[0,0.7] (implied: MATERIAL_WEIGHT = 1 - MOBILITY_WEIGHT)		 
 	
 	mobility balancing
 	MOBILITY_BALANCE_GAUSSIAN_B	[0,20)
@@ -376,6 +376,14 @@ public class ChessStyle extends DoubleVectorIndividual implements PlayStyle
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	@Override
+	public double distance(PlayStyle other)
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}	
 	
 }

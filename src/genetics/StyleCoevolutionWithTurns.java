@@ -151,9 +151,9 @@ public class StyleCoevolutionWithTurns extends Problem implements GroupedProblem
 			{
 				double score1 = game.GetValue(PlayerType.PLAYER_1);
 				double score2 = game.GetValue(PlayerType.PLAYER_2);
-				float score = (float) (score1 + score2) / 2;
+				float score = (float) Math.min(Math.abs(score1), Math.abs(score2));
 				//if the two players agree on who's winning
-				if (score1 * score2 > 0 && updateFitness[0])
+				if (score1 * score2 > 0)
 				{
 					if (score1 > 0 && updateFitness[0])
 					{
@@ -162,13 +162,13 @@ public class StyleCoevolutionWithTurns extends Problem implements GroupedProblem
 					}
 					else if (score2 < 0 && updateFitness[1])
 					{
-						fit2.setFitness(state, fit2.fitness() - score, false);
-						System.out.print(" " + String.format("%.2f", score));
+						fit2.setFitness(state, fit2.fitness() + score, false);
+						System.out.print(" -" + String.format("%.2f", score));
 					}
 				}
 				else
 				{
-					System.out.print(" .");
+					System.out.print(" 0");
 				}
 				
 				
