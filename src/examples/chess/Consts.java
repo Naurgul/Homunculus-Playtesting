@@ -44,6 +44,8 @@ public class Consts
 	
 	//STYLE PARAMETERS
 		
+	public static final int CHESSSTYLE_PARAMETERS_LENGTH = 21;
+		
 	//mobility versus material
 	public static final int MOBILITY_WEIGHT = 0;	
 	//mobility balancing

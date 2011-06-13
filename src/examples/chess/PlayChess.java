@@ -18,8 +18,23 @@ public class PlayChess
 	 */
 	public static void main(String[] args)
 	{
+		double params[] = new double[Consts.CHESSSTYLE_PARAMETERS_LENGTH];
+		try 
+		{
+			for (int i = 0; i < Consts.CHESSSTYLE_PARAMETERS_LENGTH; i++)
+			{
+				params[i] = Double.parseDouble(args[i]);	
+			}
+	        
+	    } 
+		catch (Exception e) 
+		{
+	        System.err.println("Incorrect arguments. This application requires " + Consts.CHESSSTYLE_PARAMETERS_LENGTH + " arguments of type double to generate a valid chess playstyle.");
+	        System.exit(1);
+	    }
 
-		double params[] = {0.6169228677247973, 15.043718728437366, 6.639907999686099, 0.8348754239121514, 0.1167784942154325, 0.23972010377140407, 0.6842678554624262, 0.4867228003180374, 0.7199942367632433, 0.9948140532086048, 0.055518805679279026, 0.32084045517314624, 0.03510134437133858, 0.15863663932876051, 0.14429773324194153, 8.437935158162173, 1.7328697407048304, 0.7616819991609922, 1.756012128521803, 0.7520517131875623, 7.416795294727195};
+
+		
 		ChessStyle strat = new ChessStyle();
 		strat.init(params);
 
