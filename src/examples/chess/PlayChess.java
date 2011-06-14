@@ -18,6 +18,7 @@ public class PlayChess
 	 */
 	public static void main(String[] args)
 	{
+		
 		double params[] = new double[Consts.CHESSSTYLE_PARAMETERS_LENGTH];
 		try 
 		{
@@ -37,7 +38,6 @@ public class PlayChess
 		
 		ChessStyle strat = new ChessStyle();
 		strat.init(params);
-
 		
 		ChessState game = new ChessState(strat, strat);
 		PlayerType nextUp = PlayerType.PLAYER_1;	
@@ -59,7 +59,7 @@ public class PlayChess
 				double time = 0;
 				double totalTime = 0;
 				int depth;
-				for(depth = 3; time <= 1.5; depth++)
+				for(depth = 3; time <= 1.0; depth++)
 				{
 					long startTime = System.currentTimeMillis();
 					HomunculusPlayer bot = new HomunculusPlayer(depth, nextUp);
@@ -68,7 +68,7 @@ public class PlayChess
 					time = (double)((endTime - startTime)) / 1000;
 					totalTime += time;
 				}				
-				System.out.println(turn + ". " + nextUp + ": " + move + " (time=" + totalTime + "'', depth=" + (depth-1) + ")");	
+				System.out.println(turn + ". " + nextUp + ": " + move + " (time=" + String.format("%.1f", totalTime) + "'', depth=" + (depth-1) + ")");	
 				
 			}
 			else
@@ -85,7 +85,7 @@ public class PlayChess
 		
 			
 			game.Play(move);	
-			System.out.println("\tUtil1: " + game.GetValue(PlayerType.PLAYER_1));
+			System.out.println("\tUtil1: " + String.format("%.3f", game.GetValue(PlayerType.PLAYER_1)));
 			
 			
 			if (nextUp.equals(PlayerType.PLAYER_1))

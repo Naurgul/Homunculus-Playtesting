@@ -80,7 +80,7 @@ public class Consts
 	
 	//MATCH CONFIG
 	
-	public static final int GAMETREE_SEARCH_DEPTH = 3;
+	public static final int GAMETREE_SEARCH_DEPTH = 2;
 	public static final int MAX_TURNS = 100;
 		
 }

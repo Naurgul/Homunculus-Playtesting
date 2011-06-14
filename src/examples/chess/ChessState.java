@@ -541,7 +541,7 @@ public class ChessState extends GameState
 	@Override
 	public Class<?> getStyleClass()
 	{
-		 try
+		try
 		{
 			return Class.forName("examples.chess.ChessStyle");
 		} 

@@ -34,6 +34,7 @@ public class HomunculusPlayer
 	//Returns the best action to play given a game state.
 	public GameAction Think(GameState rootstate) 
 	{
+		//TODO Check to see if there are any buggy corner cases here. :(
 		
 		//Generate a tree with possible future game states
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -276,7 +277,7 @@ public class HomunculusPlayer
 
 	private GameState AlphaBetaPruning(GameState node, double alpha, double beta, int depth)
 	{	
-		if (depth >= maxdepth)
+		if (depth > maxdepth)
 		{
 			node.setPropagatedValue(player);
 			return node;
@@ -316,32 +317,41 @@ public class HomunculusPlayer
 				child.Play(action, null);
 				GameState grandChild = AlphaBetaPruning(child, alpha, beta, depth+1);
 				child.setPropagatedValue(grandChild.getPropagatedValue());
-				if (child.getPropagatedValue() >= bestUtil)
+				if (bestChild == null)
 				{
 					bestChild = child;
+				}
+				if (child.getPropagatedValue() > alpha)
+				{
+					bestChild = child;
+					alpha = child.getPropagatedValue();
 					bestUtil = child.getPropagatedValue();
 				}
-				if (bestUtil >= beta)
+				if (alpha >= beta)
 				{
-					return child;
+					return bestChild;
 				}
-				alpha = Math.max(alpha, bestUtil);
 			}
 			else if (nextPlayer.equals(PlayerType.PLAYER_2))
 			{
 				GameState child = node.clone();
 				child.Play(null, action);
-				child.setPropagatedValue(AlphaBetaPruning(child, alpha, beta, depth+1).getPropagatedValue());
-				if (child.getPropagatedValue() <= bestUtil)
+				GameState grandChild = AlphaBetaPruning(child, alpha, beta, depth+1);
+				child.setPropagatedValue(grandChild.getPropagatedValue());
+				if (bestChild == null)
 				{
 					bestChild = child;
+				}
+				if (child.getPropagatedValue() < beta)
+				{
+					bestChild = child;
+					beta = child.getPropagatedValue();
 					bestUtil = child.getPropagatedValue();
 				}
-				if (bestUtil <= alpha)
+				if (alpha >= beta)
 				{
-					return child;
+					return bestChild;
 				}
-				beta = Math.min(beta, bestUtil);
 			}		
 			else
 			{
