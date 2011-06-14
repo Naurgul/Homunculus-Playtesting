@@ -82,5 +82,72 @@ public class Consts
 	
 	public static final int GAMETREE_SEARCH_DEPTH = 2;
 	public static final int MAX_TURNS = 100;
+	
+	//GUI
+	
+	public static final int WHITE_COLOUR = 230;
+	public static final int BLACK_COLOUR = 190;
+
+	public static String getPieceChar(ChessSquare chessSquare)
+	{		
+		if (chessSquare.getPiece() != null)
+		{
+			if (chessSquare.getPiece().getOwner().equals(PlayerType.PLAYER_1))
+			{
+				if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.KING))
+				{
+					return "\u2654";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.QUEEN))
+				{
+					return "\u2655";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.ROOK))
+				{
+					return "\u2656";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.BISHOP))
+				{
+					return "\u2657";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.KNIGHT))
+				{
+					return "\u2658";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.PAWN))
+				{
+					return "\u2659";
+				}
+			}
+			else
+			{
+				if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.KING))
+				{
+					return "\u265A";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.QUEEN))
+				{
+					return "\u265B";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.ROOK))
+				{
+					return "\u265C";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.BISHOP))
+				{
+					return "\u265D";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.KNIGHT))
+				{
+					return "\u265E";
+				}
+				else if (chessSquare.getPiece().getPieceType().equals(ChessPieceType.PAWN))
+				{
+					return "\u265F";
+				}
+			}
+		}
+		return "";
+	}
 		
 }

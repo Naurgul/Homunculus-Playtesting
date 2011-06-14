@@ -17,6 +17,12 @@ public class ChessMove extends GameAction
 			actionName = fromSquare.getName() + toSquare.getName();		
 	}
 	
+	public ChessMove(ChessSquare squareFrom, ChessSquare squareTo)
+	{
+		this.fromSquare = squareFrom.clone();
+		this.toSquare = squareTo.clone();
+	}
+
 	public ChessSquare getFromSquare()
 	{
 		return fromSquare;

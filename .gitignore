@@ -1,4 +1,6 @@
 
+*.jar
+*.zip
 playtest.*.gz
 *.stat
 *.class
