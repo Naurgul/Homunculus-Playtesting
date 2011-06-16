@@ -4,6 +4,7 @@ import gameTheory.GameAction;
 
 public class TictacAction extends GameAction
 {
+
 	private int num;
 	private int x;
 	private int y;
@@ -45,5 +46,24 @@ public class TictacAction extends GameAction
 	public int getY()
 	{
 		return y;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TictacAction other = (TictacAction) obj;
+		if (num != other.num)
+			return false;
+		if (x != other.x)
+			return false;
+		if (y != other.y)
+			return false;
+		return true;
 	}
 }

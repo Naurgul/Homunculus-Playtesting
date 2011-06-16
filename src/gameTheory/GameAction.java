@@ -13,4 +13,6 @@ public abstract class GameAction
 	{
 		return actionName;
 	}
+	
+	public abstract boolean equals(Object obj);
 }

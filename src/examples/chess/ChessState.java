@@ -3,6 +3,7 @@ package examples.chess;
 import ec.Individual;
 import gameTheory.GameAction;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -17,6 +18,7 @@ public class ChessState extends GameState
 	//They are all turned off by default and should only be modified via custom cloning.
 	private boolean disabledKingThreat;	//don't check if the king is threatened
 	private boolean showDefendingMoves; //allow moves that end on pieces of the same player
+	private int numTurns;
 	 
 
 	public ChessState(Individual strat1, Individual strat2)
@@ -36,6 +38,9 @@ public class ChessState extends GameState
 		
 		//White plays first
 		nextPlayer = PlayerType.PLAYER_1;
+		
+		//Initialise turn counter
+		numTurns = 0;
 		
 		//Turn off special settings, this is a normal state
 		disabledKingThreat = false;
@@ -417,6 +422,8 @@ public class ChessState extends GameState
 					lastMove2 = (GameAction) action2;
 					nextPlayer = PlayerType.PLAYER_1;
 				}
+				//increment turn counter
+				numTurns++;
 			}			
 		}
 	}
@@ -477,6 +484,7 @@ public class ChessState extends GameState
 		newState.probability = this.probability;
 		newState.lastMove1 = this.lastMove1;
 		newState.lastMove2 = this.lastMove2;
+		newState.numTurns = this.numTurns;
 		return newState;
 	}
 	
@@ -551,6 +559,69 @@ public class ChessState extends GameState
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	@Override
+	public int compareTo(GameState other)
+	{		
+		if (other instanceof ChessState)
+		{
+			int turnDif = this.numTurns - ((ChessState)other).numTurns; 
+			if (turnDif != 0)
+			{
+				return turnDif;
+			}
+			else 
+			{
+				return this.hashCode() - other.hashCode();
+			}
+		}
+		else
+		{
+			return 0;	
+		}				
+	}
+
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(board);
+		result = prime * result + (disabledKingThreat ? 1231 : 1237);
+		result = prime * result + numTurns;
+		result = prime * result + (showDefendingMoves ? 1231 : 1237);
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ChessState other = (ChessState) obj;
+		if (!Arrays.equals(board, other.board))
+			return false;
+		if (disabledKingThreat != other.disabledKingThreat)
+			return false;
+		if (numTurns != other.numTurns)
+			return false;
+		if (showDefendingMoves != other.showDefendingMoves)
+			return false;
+		if(!nextPlayer.equals(other.nextPlayer))
+			return false;
+		if(!lastMove1.equals(other.lastMove1))
+			return false;
+		if(!lastMove2.equals(other.lastMove2))
+			return false;
+		return true;
 	}
 
 }

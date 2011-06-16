@@ -4,7 +4,7 @@ import ec.Individual;
 import gameTheory.GameAction;
 import java.util.LinkedList;
 
-public abstract class GameState 
+public abstract class GameState implements Comparable<GameState>
 {
 	protected Individual strategy1;
 	protected Individual strategy2;
@@ -14,6 +14,7 @@ public abstract class GameState
 	protected PlayerType nextPlayer;
 	protected GameAction lastMove1;
 	protected GameAction lastMove2;
+	
 	
 	public  GameState(Individual strat1, Individual strat2) 
 	{

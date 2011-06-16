@@ -6,6 +6,7 @@ import gameTheory.ZeroSumNormalFormGame;
 
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.TreeMap;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -13,15 +14,18 @@ import ec.util.MersenneTwisterFast;
 
 public class HomunculusPlayer 
 {
+	private static final int BUFFER_SIZE = 10000;
 	private int maxdepth;
 	private PlayerType player;
 	private MersenneTwisterFast luck;
+	private TreeMap<GameState, Double> buffer;
 	
 	public HomunculusPlayer(int maxdepth, PlayerType player) 
 	{
 		this.maxdepth = maxdepth;
 		this.player = player;
 		luck = new MersenneTwisterFast();	
+		buffer = new TreeMap<GameState, Double>();
 	}
 	
 	public HomunculusPlayer(int maxdepth, PlayerType player, MersenneTwisterFast randomizer) 
@@ -29,6 +33,7 @@ public class HomunculusPlayer
 		this.maxdepth = maxdepth;
 		this.player = player;
 		luck = randomizer;	
+		buffer = new TreeMap<GameState, Double>();
 	}
 	
 	//Returns the best action to play given a game state.
@@ -277,6 +282,12 @@ public class HomunculusPlayer
 
 	private GameState AlphaBetaPruning(GameState node, double alpha, double beta, int depth)
 	{	
+		GameState bufferNode = getFromBuffer(node);
+		if (bufferNode != null)
+		{
+			return bufferNode;
+		}
+		
 		if (depth > maxdepth)
 		{
 			node.setPropagatedValue(player);
@@ -316,6 +327,7 @@ public class HomunculusPlayer
 				GameState child = node.clone();
 				child.Play(action, null);
 				GameState grandChild = AlphaBetaPruning(child, alpha, beta, depth+1);
+				putToBuffer(child, grandChild.getPropagatedValue());
 				child.setPropagatedValue(grandChild.getPropagatedValue());
 				if (bestChild == null)
 				{
@@ -337,6 +349,7 @@ public class HomunculusPlayer
 				GameState child = node.clone();
 				child.Play(null, action);
 				GameState grandChild = AlphaBetaPruning(child, alpha, beta, depth+1);
+				putToBuffer(child, grandChild.getPropagatedValue());
 				child.setPropagatedValue(grandChild.getPropagatedValue());
 				if (bestChild == null)
 				{
@@ -361,6 +374,7 @@ public class HomunculusPlayer
 		
 		return bestChild;
 	}
+
 
 	//Gets all possible action pairs (one for each player) from a specific game state
 	private LinkedList<ActionSet> GetAvailableMoves(GameState state) 
@@ -399,6 +413,32 @@ public class HomunculusPlayer
 		}
 			
 		return move_pairs;
+	}
+	
+	private void putToBuffer(GameState node, double val)
+	{
+		GameState cloneNode = node.clone();
+		buffer.put(cloneNode, val);
+		if (buffer.size() > BUFFER_SIZE)
+		{
+			buffer.pollFirstEntry();
+		}
+		
+	}
+
+	private GameState getFromBuffer(GameState node)
+	{
+		try
+		{
+			double val = buffer.get(node);	
+			GameState bufferNode = node.clone();
+			bufferNode.setPropagatedValue(val);
+			return bufferNode;
+		}
+		catch (NullPointerException e)
+		{
+			return null;
+		}		
 	}
 	
 	//A simple class that holds two actios in one structure.

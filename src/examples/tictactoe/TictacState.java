@@ -6,6 +6,7 @@ import examples.chess.ChessState;
 import examples.chess.Consts;
 import gameTheory.GameAction;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import tactical.GameState;
@@ -20,6 +21,7 @@ public class TictacState extends GameState
 	private static final int EMPTY_SQUARE = ' ';
 	private static final int X_SQUARE = 'X';
 	private static final int O_SQUARE = 'O';
+	private int numTurns;
 	
 
 	public TictacState(Individual strat1, Individual strat2)
@@ -37,6 +39,8 @@ public class TictacState extends GameState
 				board[i][j] = EMPTY_SQUARE;
 			}
 		}
+		
+		numTurns = 0;
 	}
 
 	@Override
@@ -150,6 +154,7 @@ public class TictacState extends GameState
 			lastMove2 = action2;
 			nextPlayer = PlayerType.PLAYER_1;
 		}		
+		numTurns++;
 	}
 
 	@Override
@@ -224,6 +229,39 @@ public class TictacState extends GameState
 		}
 		System.out.println("\n");
 		
+	}
+
+	@Override
+	public int compareTo(GameState o)
+	{
+		return this.numTurns - ((TictacState)o).numTurns;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(board);
+		result = prime * result + numTurns;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TictacState other = (TictacState) obj;
+		if (!Arrays.equals(board, other.board))
+			return false;
+		if (numTurns != other.numTurns)
+			return false;
+		return true;
 	}
 
 }

@@ -34,20 +34,10 @@ public class ChessGUI
 	private JFrame frame;
 	private JToggleButton[][] boardButtons;
 	private static ChessState game;
+	private static HomunculusPlayer bot;
 	private static GuiState logicState;
-	private static final double[][] params = 
-	{
-		{0.3354472693493306, 19.830235475480293, 18.530561700335078, 1.7768081862068685, 1.3039733808137042, 0.05649225395344648, 0.1407910544120916, 0.19034547826104664, 0.20868354505293008, 0.7338611746203383, 0.1520271878441486, 0.41378453978254975, 0.0845769669613337, 0.19843608945987432, 0.15117521595209354, 7.726749199055515, 0.347278098569012, 0.5557058392069201, 0.8102714323373518, 0.12464370936166658, 14.085159070322069},
-		{0.17581757244876295, 12.688419958067424, 2.3938188914826766, 3.722173293753225, 2.601580315200016, 0.024368045772347413, 0.48071143706894204, 0.3348896146504394, 0.5027717163976494, 0.6342193158559463, 0.05408402443499783, 0.1929228344465623, 0.05242233889157571, 0.5864320751062897, 0.11413872712057442, 3.9066232244068955, 0.9613385434093868, 0.7815537357406848, 1.5339902531348255, 0.290061840092954, 6.041655079064958},
-		{0.17581757244876295, 12.688419958067424, 2.3938188914826766, 3.722173293753225, 2.601580315200016, 0.024368045772347413, 0.48071143706894204, 0.3348896146504394, 0.5027717163976494, 0.6342193158559463, 0.05408402443499783, 0.1929228344465623, 0.05242233889157571, 0.5864320751062897, 0.11413872712057442, 3.9066232244068955, 0.9613385434093868, 0.7815537357406848, 1.5339902531348255, 0.290061840092954, 6.041655079064958},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	};	
+
+	
 	private ChessSquare squareFrom; 
 	private ChessSquare squareTo;
 	private JProgressBar gameValue;
@@ -63,9 +53,9 @@ public class ChessGUI
 	{
 
 		ChessStyle strat = new ChessStyle();
-		strat.init(params[2]);
+		strat.init(Consts.DEFAULT_STYLES[Consts.DEFAULT_STRATEGY]);
 		game = new ChessState(strat, strat);
-		
+		bot = new HomunculusPlayer(Consts.GAMETREE_SEARCH_DEPTH, PlayerType.PLAYER_2);
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run()
@@ -129,7 +119,7 @@ public class ChessGUI
 		tacticsSlider.setSnapToTicks(true);
 		tacticsSlider.setMinimum(1);
 		tacticsSlider.setMajorTickSpacing(1);
-		tacticsSlider.setValue(2);
+		tacticsSlider.setValue(Consts.GAMETREE_SEARCH_DEPTH);
 		tacticsSlider.setMinorTickSpacing(1);
 		tacticsSlider.setMaximum(4);
 		tacticsSlider.setForeground(Color.LIGHT_GRAY);
@@ -142,7 +132,7 @@ public class ChessGUI
 		strategySlider.setPaintTicks(true);
 		strategySlider.setSnapToTicks(true);
 		strategySlider.setMajorTickSpacing(1);
-		strategySlider.setValue(2);
+		strategySlider.setValue(Consts.DEFAULT_STRATEGY);
 		strategySlider.setMinorTickSpacing(1);
 		strategySlider.setMaximum(9);
 		strategySlider.setForeground(Color.LIGHT_GRAY);
@@ -225,7 +215,18 @@ public class ChessGUI
 				boardButtons[rank][file].setText(text);
 				if (square.getPiece() != null && square.getPiece().getOwner().equals(PlayerType.PLAYER_1))
 				{
-					shouldBeOn = true;
+					LinkedList<GameAction> moveList = game.getActions(PlayerType.PLAYER_1);
+					if (moveList != null)
+					{
+						for (GameAction move : moveList)
+						{						
+							if ( ( ((ChessMove)move).getFromSquare().getFile() == square.getFile() ) && ( ((ChessMove)move).getFromSquare().getRank() == square.getRank() ) )
+							{
+								shouldBeOn = true;
+								break;
+							}						
+						}
+					}
 				}
 				boardButtons[rank][file].setEnabled(shouldBeOn);
 			}
@@ -311,7 +312,6 @@ public class ChessGUI
 							deselectAllButtons();
 							updateBoard();							
 							logicState = GuiState.AI_THINKING;
-							HomunculusPlayer bot = new HomunculusPlayer(tacticsSlider.getValue(), PlayerType.PLAYER_2);
 							move = (ChessMove) bot.AlphaBetaPruning(game);	
 							Toolkit.getDefaultToolkit().beep();
 							game.Play(move);						
@@ -347,8 +347,9 @@ public class ChessGUI
 		public void actionPerformed(ActionEvent arg0)
 		{
 			ChessStyle strat = new ChessStyle();
-			strat.init(params[strategySlider.getValue()]);
+			strat.init(Consts.DEFAULT_STYLES[strategySlider.getValue()]);
 			game = new ChessState(strat, strat);
+			bot = new HomunculusPlayer(tacticsSlider.getValue(), PlayerType.PLAYER_2);
 			setAllButtonsEnabled(false);
 			deselectAllButtons();
 			updateBoard();
